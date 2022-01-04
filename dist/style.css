@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;600&display=swap');
+:root{
+    --color-blue-100: hsl(249, 100%, 95%);
+    --color-blue-200: hsl(249, 100%, 89%);
+    --color-blue-400: hsl(249, 100%, 69%);
+    --color-blue-500: hsl(249, 100%, 59%);
+    --color-blue-600: hsl(249, 100%, 49%);
+    --color-blue-700: hsl(249, 100%, 39%);
+    --color-yellow-200: rgb(255, 253, 231);
+}
+
+*, *::after, *::before{
+    box-sizing: border-box;
+    margin:0;
+    padding: 0;
+    font-family: 'Quicksand', sans-serif;
+}
+body{
+    position: relative;
+}
+
+button{
+    display: flex;
+    background-color: transparent;
+    outline: none;
+    border: none;
+} 
+
+/* =========== NAV ===========  */
+#header{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width:300px;
+    display:flex;
+    flex-direction: column;
+    overflow-y:scroll;
+    background: linear-gradient(var(--color-yellow-200), var(--color-blue-200));
+}
+.nav__group{
+    display:flex;
+    align-items: center;
+    padding:0.8em;
+}
+.nav-title{
+    font-size: 2em;
+    padding: 0 0.5em;
+}
+#nav-icon{
+    width: 50px;   
+}
+
+/*  =========== NAV-PROJECTS ===========  */
+.project{
+    width:100%;
+}
+.nav-project{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:1em 0.2em;
+    margin-bottom:0.5em;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.nav-project:hover{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.active{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.project-name{
+    padding: 0 0.5em;
+    text-align: center;
+    overflow-wrap: break-word; 
+}
+.project-icon{
+    width:20px;
+    height:20px;
+}
+
+path{
+    fill: var(--color-blue-200);
+}
+button:hover{
+    transform: scale(1.2);
+}
+.nav__menu{
+    display:none;
+}
+/*  =========== NEW-PROJECT ===========  */
+#add-project{
+    width:100%;
+    padding:1.5em;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    
+}
+#add-project:hover{
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+#add-project *{
+    margin: 0 1em;
+}
+/* ===========  MAIN ===========  */
+#main{
+    margin-left: 300px;
+    padding: 10px;
+}
+.todo__item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    margin:0.5em;
+    background-color: var(--color-yellow-200);
+}
+.todo__item__buttons{
+    display:flex;
+    gap:1em;
+}
+.todo__item_group{
+    display:flex;
+    align-items: center;
+    gap:1em;
+}
+input[type="checkbox"]{
+    width:15px;
+    height:15px
+}
+/*  =========== style classes ===========  */
+.done{
+    background-color: var(--color-blue-100);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+}
+.high{
+    border-left: 4px solid var(--color-blue-700);
+    border-right: 2px solid var(--color-blue-700);
+}
+.mid{
+    border-left: 4px solid var(--color-blue-500);
+    border-right: 2px solid var(--color-blue-500);
+}
+.low{
+    border-left: 4px solid var(--color-blue-400);
+    border-right: 2px solid var(--color-blue-400);
+}
+
+/* MEDIA QUERIES */
+@media (max-width:800px) {
+    .nav__menu{
+        display:inline;
+    }
+}
