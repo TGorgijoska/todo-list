@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/99cffc6826.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <header id="header">
+        <nav class="nav">
+            <div class="nav__group">
+                <img src="img/check.png" alt="" id="nav-icon">
+                <h1 class="nav-title">your TODOs</h1>
+            </div>
+            <div class="nav__menu">
+                <i class="far fa-caret-square-down fa-2x"></i>
+            </div>
+            <!-- PROJECTS -->
+            <div class="nav__group">
+                <div class="project">
+                    <div class="nav-project">
+                        <h2 class="project-name">JavaScript is a lang </h2>
+                        <button class="project-delbtn"> <i class="fas fa-trash fa-lg"></i> </button>
+                    </div>
+                    <div class="nav-project">
+                        <h2 class="project-name">CSS</h2>
+                        <button class="project-delbtn"><i class="fas fa-trash fa-lg"></i>  </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ADD NEW PROJECT -->
+            <div class="nav__group">              
+                <button id="add-project"><i class="fas fa-plus fa-lg"></i>new project </i></button>
+            </div>
+        </nav>
+    </header>
+    <!-- TODOs -->
+    <main id="main">
+        <div class="todo" data-project="uni">
+            <div class="todo__item low done" data-todo="1">
+                <div class="todo__item_group">
+                    <input type="checkbox" name="" id="">
+                    <h3 class="todos_item--title ">Factory functions</h3>
+                </div>
+                <p class="todo__item--date">12.09.2021</p>
+                <div class="todo__item__buttons">
+                    <button class="todo__item-delbtn"><i class="fas fa-trash fa-lg"></i>  </button>
+                    <button class="todo__item-editbtn"><i class="fas fa-pen fa-lg"></i></button>
+                </div>
+            </div>
+            <div class="todo__item high">
+                <div class="todo__item_group">
+                    <input type="checkbox" name="" id="">
+                    <h3 class="todo__item--title" data-todo="3">todo-project</h3>
+                </div>
+                <p class="todo__item--date">12.09.2021</p>
+                <div class="todo__item__buttons">
+                    <button class="todo__item__buttons-delbtn"> <i class="fas fa-trash fa-lg"></i></button>
+                    <button class="todo__item__buttons-editbtn"><i class="fas fa-pen fa-lg"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+
+
+    <script src="main.js"></script>
+</body>
+</html>
