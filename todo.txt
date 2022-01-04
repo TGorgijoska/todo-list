@@ -1,0 +1,29 @@
+- use factories or constructors/classes to generate todo
+- projects with separate lists of todos
+- separate application logic from DOM-related stuff, separate modules
+- use loaclStorage 
+- https://github.com/date-fns/date-fns  library for manipulating dates and times
+
+- The project should have:
+    - view all projects
+    - view all todos in each project 
+    - expand a single todo to see/edit its details
+    - delete a todo 
+
+- Notes?  Checklist?
+
+==============================
+= PROJECT
+- add button 
+    - write unique name
+- edit      - delete
+
+=TODOs
+- add button 
+    - write name
+    - write description
+    - select date
+    - select priority: low, mid, high
+    -- dataset name+num
+- edit button
+- delete button
