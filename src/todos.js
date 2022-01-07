@@ -1,5 +1,5 @@
-export default Todos = (name, priority, description) => {
+export default function Todos (name, priority, description, done) {
 
-    // return {name, priority, description};
+    return {name, priority, description, done};
     
 }

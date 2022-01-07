@@ -1,43 +1,103 @@
-import {getProjects, getTodos} from './storage.js';
+import {projectsStorage, getProjects, getTodos} from './storage.js';
 
 
     export default function loadPage () {
 
         loadProjects();
+        eventListeners();
+        
     }
-
+// ========= LOADING FROM LOCAL STORAGE ========= 
     function loadProjects () {
         const projects = getProjects();
-        projects.forEach((el) => addProjectEl(el.name));
+        if(projects == null) return;
+        projects.forEach((el) => addProjectElement(el.name));
     }
     function loadTodos(){
         const projectName = getCurrentProject();
         const todos = getTodos(projectName);
-        todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description)});
-    }
-
+        if(todos == null) return;
+        todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description, el.done)});
+    }  
     function getCurrentProject(){
         const project = document.querySelector('todo');
         return project.dataset.project;
     }
-    
-    function addProjectEl (name) {
+// ========= ADDING EVENT LISTENERS TO BUTTONS =========
+    function eventListeners(){
+        const addProjectBtn = document.querySelector('#add-project');
+        const addTodoBtn = document.querySelector('#add-todo');
+        const submitNewProject = document.getElementById('add-project_submit');
+        const cancelNewProject = document.getElementById('add-project_cancel');
+        const cancelNewTodo = document.getElementById('add-todo_cancel');
+        // for project
+        addProjectBtn.addEventListener('click', () => {
+            showNewProjectDiv(addProjectBtn)
+        });
+        cancelNewProject.addEventListener('click',() => {
+            hideNewProjectDiv(addProjectBtn)
+        });
+        // for todos
+        addTodoBtn.addEventListener('click', () => {
+            showNewTodoDiv(addTodoBtn);
+        });
+        cancelNewTodo.addEventListener('click', () => {
+            hideNewTodoDiv(addTodoBtn);
+        })
+
+
+    }
+// ======== SHOW/HIDE INPUT+BUTTONS FOR ADDING NEW PROJECT ========
+    function hideNewProjectDiv (btn){
+        btn.classList.remove('hide');
+        const inputDiv = document.querySelector('.nav__group--newproject');
+        inputDiv.classList.remove('show');
+    }
+    function showNewProjectDiv (btn){
+        btn.classList.add('hide');
+        const inputDiv = document.querySelector('.nav__group--newproject');
+        inputDiv.classList.add('show');
+    }
+    function hideNewTodoDiv (btn){
+        btn.classList.remove('hide');
+        const inputDiv = document.querySelector('.add-todo_group');
+        inputDiv.classList.remove('show');
+    }
+    function showNewTodoDiv (btn){
+        btn.classList.add('hide');
+        const inputDiv = document.querySelector('.add-todo_group');
+        inputDiv.classList.add('show');
+    }
+// ========= CROSS OUT A TODO =========
+    function todoDone(todoEl){
+
+    }
+
+// ========= ADD INDIVIDUAL ELEMENTS ============
+    function addProjectElement (name) {
         const projectsDiv = document.querySelector('.projects');
         // createElements
         let div = document.createElement('div');
         let headerName = document.createElement('h2');
         let delBtn = document.createElement('button');
+        let icon = document.createElement('i');
 
         // classList
         div.classList.add('nav-project');
         headerName.classList.add('project-name');
         delBtn.classList.add('project-delbtn');
+        i.classList.add('fas');
+        i.classList.add('fa-trash');
+        i.classList.add('fa-lg');
 
-        // textContent
+        div.setAttribute('data-project', name.replace(' ', '-'));
         headerName.textContent = name;
-        delBtn.textContent = 'delete';
+
+        // events
+        div.addEventListener('click', () => {loadTodos()}) ;
 
         // append
+        delBtn.appendChild(icon);
         div.appendChild(headerName);
         div.appendChild(delBtn);
         projectsDiv.appendChild(div);

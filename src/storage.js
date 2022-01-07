@@ -7,12 +7,18 @@ function setStorage(name, value){
 
 function getProjects(){
     let projects = JSON.parse(localStorage.getItem('projects'));
-    projects.map((el) => { return el=Project(el.name) });
+    if(projects == null) return;
+    projects.map((el) => { return el = Project(el.name) });
     return projects;
 }
 function getTodos(projectName){
     let todos = JSON.parse(localStorage.getItem(projectName));
+    if(todos == null) return;
     todos.map((el) => { return el = Todos(el.name, el.priority, el.descr)})
+    return todos;
+}
+function projectsStorage(...projects){
+    setStorage('projects', projects);
 }
 
-export {getProjects, getTodos};
+export {projectsStorage, getProjects, getTodos};

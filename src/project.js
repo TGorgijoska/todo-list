@@ -1,6 +1,3 @@
-export default Project = (name) => {
-
-
-    return {name};
-
+export default function Project (name) {
+    return name;
 }
