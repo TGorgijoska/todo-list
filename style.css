@@ -2,11 +2,12 @@
 :root{
     --color-blue-100: hsl(249, 100%, 95%);
     --color-blue-200: hsl(249, 100%, 89%);
+    --color-blue-300: hsl(249, 100%, 79%);
     --color-blue-400: hsl(249, 100%, 69%);
     --color-blue-500: hsl(249, 100%, 59%);
     --color-blue-600: hsl(249, 100%, 49%);
     --color-blue-700: hsl(249, 100%, 39%);
-    --color-yellow-200: rgb(255, 253, 231);
+    --color-yellow-200: hsl(55, 100%, 95%);
 }
 
 *, *::after, *::before{
@@ -16,7 +17,7 @@
     font-family: 'Quicksand', sans-serif;
 }
 body{
-    position: relative;
+    position: relative; 
 }
 
 button{
@@ -72,7 +73,6 @@ button{
 
 .project-name{
     padding: 0 0.5em;
-    text-align: center;
     overflow-wrap: break-word; 
 }
 .project-icon{
@@ -83,26 +83,69 @@ button{
 path{
     fill: var(--color-blue-200);
 }
-button:hover{
+.project-delbtn:hover, .todo__item__buttons-delbtn:hover, .todo__item__buttons-editbtn:hover{
     transform: scale(1.2);
 }
 .nav__menu{
     display:none;
 }
-/*  =========== NEW-PROJECT ===========  */
-#add-project{
+/*  =========== NEW-PROJECT NEW-TODO===========  */
+#add-project, #add-todo{
     width:100%;
     padding:1.5em;
     background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 5px;
     
 }
+#add-todo{
+    background: linear-gradient(45deg ,var(--color-yellow-200), transparent);
+
+}
+#add-todo:hover{
+    background: linear-gradient(-45deg ,var(--color-yellow-200), transparent);
+}
 #add-project:hover{
-    transform: scale(1);
     background-color: rgba(255, 255, 255, 0.5);
 }
-#add-project *{
+#add-project *, #add-todo *{
     margin: 0 1em;
+}
+.nav__group--newproject, .add-todo_group{
+    display: none;
+    flex-direction: column;
+}
+.nav__group--newproject input, .add-todo_group input , .add-todo_group select{
+    padding: 1em;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+.add-todo_group input, .add-todo_group select{
+    background-color: var(--color-blue-100);
+    margin: 0.5em 0;
+}
+
+
+.add-btns{
+    display: flex;
+    justify-content: flex-start;
+    gap:1em;
+    margin: 1em;
+    width: 100%;
+}
+
+.submitbtn, .cancelbtn{
+    padding:1em;
+    border-radius: 5px;
+}
+.submitbtn:hover, .cancelbtn:hover{
+    opacity: 0.8;
+}
+.submitbtn{
+    background-color: var(--color-blue-300);
+}
+.cancelbtn{
+    background-color: var(--color-blue-200);
 }
 /* ===========  MAIN ===========  */
 #main{
@@ -132,9 +175,16 @@ input[type="checkbox"]{
 }
 /*  =========== style classes ===========  */
 .done{
-    background-color: var(--color-blue-100);
+    /* background-color: var(--color-blue-100); */
+    opacity:0.4;
     text-decoration: line-through;
     text-decoration-thickness: 2px;
+}
+.show{
+    display: flex;
+}
+.hide{
+    display:none;
 }
 .high{
     border-left: 4px solid var(--color-blue-700);
@@ -149,9 +199,32 @@ input[type="checkbox"]{
     border-right: 2px solid var(--color-blue-400);
 }
 
+
 /* MEDIA QUERIES */
+/* 
 @media (max-width:800px) {
+    #header{
+      width:50px;  
+    } 
+    #main{
+        margin-left: 50px;
+    }
+    .nav{
+        transition: all 0.2s ease-in-out;
+        transform: translateX(-100%); 
+    }
+    .open{
+        width:300px;
+    }
+    .slide-in{
+        transition: all 0.2s ease-in-out;
+        transform: translateX(0);
+    }
     .nav__menu{
         display:inline;
     }
-}
+    .todo__item{
+        flex-wrap: wrap;
+    }
+} 
+*/
