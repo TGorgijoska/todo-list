@@ -1,5 +1,6 @@
 import Project from './project.js';
 import Todos from './todos.js';
+import { remove } from "lodash";
 
 function setStorage(name, value){
     localStorage.setItem(name, JSON.stringify(value));
@@ -15,8 +16,18 @@ function getTodos(projectName){
     if(todos == null) return [];
     return todos.map(el => el = Todos(el.name, el.priority, el.date, el.done));   
 }
-function projectsStorage(...projects){
-    setStorage('projects', projects);
+function removeProjectStorage(name){
+    let projectsArr = getProjects();
+    projectsArr = remove(projectsArr, (el) => {
+        return el.name != name;
+    })
+    setStorage('projects', projectsArr);
+    localStorage.removeItem(name);
 }
+function addProjectStorage(project){
+    const projectsArr = getProjects();  
+    projectsArr.push(project);
+    setStorage('projects',projectsArr);
 
-export {projectsStorage, getProjects, getTodos, setStorage};
+}
+export {getProjects, getTodos, setStorage, removeProjectStorage, addProjectStorage};

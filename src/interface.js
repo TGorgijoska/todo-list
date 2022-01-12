@@ -1,11 +1,11 @@
-import {projectsStorage, getProjects, getTodos, setStorage} from './storage.js';
+import {getProjects, getTodos, setStorage, removeProjectStorage, addProjectStorage} from './storage.js';
 import Project from './project.js';
 import Todos from './todos.js';
 import { remove } from "lodash";
 import { format } from 'date-fns'
-// TODO: new todos function
-// TODO: delete project
 // TODO: fix buttons functions
+// TODO: edit todo
+// TODO: modify done todo
 
 
 const addProjectBtn = document.querySelector('#add-project');
@@ -126,14 +126,12 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     function newProject () {
         const value = document.querySelector('[name="project-name"]').value;
         const project = Project(value);
-        const projectsArr = getProjects();
-        
+        const projectsArr = getProjects();      
         if(project.uniqueName(projectsArr)){
             showNameWarrning(); 
             return;
         }
-        projectsArr.push(project);
-        setStorage('projects',projectsArr);
+        addProjectStorage(project);   
         addProjectElement(project.name);
         hideNewProjectDiv(addProjectBtn);
     }
@@ -141,13 +139,8 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     function deleteProject(btn){
         const parent = btn.parentNode;
         const name = parent.getAttribute('data-project');
-        let projectsArr = getProjects();
-        projectsArr = remove(projectsArr, (el) => {
-            return el.name != name;
-        })
         parent.remove();
-        setStorage('projects', projectsArr);
-        
+        removeProjectStorage(name);
     }
 
 // ========= NEW TODO =========
@@ -162,6 +155,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         let todoArr = getTodos(getOpenedProject());
         todoArr.push(todo);
         setStorage(getOpenedProject(), todoArr);
+        hideNewTodoDiv(addTodoBtn);
 
     }
 // ========= DELETE TODO ITEM =========
