@@ -1,4 +1,4 @@
-import {getProjects, getTodos, setStorage, removeProjectStorage, addProjectStorage} from './storage.js';
+import * as Storage from './storage.js';
 import Project from './project.js';
 import Todos from './todos.js';
 import { remove } from "lodash";
@@ -6,6 +6,9 @@ import { format } from 'date-fns'
 // TODO: fix buttons functions
 // TODO: edit todo
 // TODO: modify done todo
+// TODO: add today's tasks
+// TODO: clear input after add/cancel
+// TODO: sort todos? maybe
 
 
 const addProjectBtn = document.querySelector('#add-project');
@@ -29,7 +32,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     }
 // ========= LOADING FROM LOCAL STORAGE ========= 
     function loadProjects () {
-        const projects = getProjects();
+        const projects = Storage.getProjects();
         if(projects == null) return;
         projects.forEach((el) => addProjectElement(el.name));
     }
@@ -39,7 +42,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         setOpenedProject(projectName);
         document.querySelector('.todo').setAttribute('data-project', projectName);
         // get from storage and load each one
-        const todos = getTodos(projectName);
+        const todos = Storage.getTodos(projectName);
         if(todos == null) return;
         todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description, el.done)});
     }  
@@ -126,12 +129,12 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     function newProject () {
         const value = document.querySelector('[name="project-name"]').value;
         const project = Project(value);
-        const projectsArr = getProjects();      
+        const projectsArr = Storage.getProjects();      
         if(project.uniqueName(projectsArr)){
             showNameWarrning(); 
             return;
         }
-        addProjectStorage(project);   
+        Storage.addProjectStorage(project);   
         addProjectElement(project.name);
         hideNewProjectDiv(addProjectBtn);
     }
@@ -140,7 +143,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         const parent = btn.parentNode;
         const name = parent.getAttribute('data-project');
         parent.remove();
-        removeProjectStorage(name);
+        Storage.removeProjectStorage(name);
     }
 
 // ========= NEW TODO =========
@@ -152,24 +155,18 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         addTodoElement(name.value, selected, format(new Date(date.value), 'dd/MMM/yyyy'), false);
 
         const todo = Todos(name.value, selected,format(new Date(date.value), 'dd/MMM/yyyy'), false);
-        let todoArr = getTodos(getOpenedProject());
-        todoArr.push(todo);
-        setStorage(getOpenedProject(), todoArr);
-        hideNewTodoDiv(addTodoBtn);
+        Storage.addTodoStorage(todo);
 
+        hideNewTodoDiv(addTodoBtn);
     }
 // ========= DELETE TODO ITEM =========
     function deleteTodo(name){
         const element = document.querySelector(`div[data-todo='${name}']`);
-        let todoArr = getTodos(getOpenedProject());
-        todoArr = remove(todoArr, (el) => {
-            return el.name != name;
-        })
         element.remove();
-        setStorage(getOpenedProject(), todoArr);
+        Storage.removeTodoStorage(name);
     }
 // ========= HELPERs =========
-    const getOpenedProject= () => {
+    export const getOpenedProject= () => {
         return document.querySelector('.todo').dataset.project;
     }
     const setOpenedProject = (name) => {
