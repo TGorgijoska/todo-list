@@ -1,5 +1,5 @@
-export default function Todos (name, priority, description, done) {
+export default function Todos (name, priority, date, done) {
 
-    return {name, priority, description, done};
+    return {name, priority, date, done};
     
 }

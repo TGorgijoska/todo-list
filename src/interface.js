@@ -1,10 +1,30 @@
-import {projectsStorage, getProjects, getTodos} from './storage.js';
+import {projectsStorage, getProjects, getTodos, setStorage} from './storage.js';
+import Project from './project.js';
+import Todos from './todos.js';
+import { remove } from "lodash";
+import { format } from 'date-fns'
+// TODO: new todos function
+// TODO: delete project
+// TODO: fix buttons functions
 
+
+const addProjectBtn = document.querySelector('#add-project');
+const submitNewProject = document.getElementById('add-project_submit');
+const cancelNewProject = document.getElementById('add-project_cancel');
+const delProjectBtn = document.querySelectorAll('.project-delbtn');
+
+const addTodoBtn = document.querySelector('#add-todo');
+const submitNewTodo = document.querySelector('#add-todo_submit');
+const cancelNewTodo = document.getElementById('add-todo_cancel');
+const doneTodo = document.querySelectorAll('.todo__item--done');
+const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
 
     export default function loadPage () {
 
         loadProjects();
         eventListeners();
+
+       
         
     }
 // ========= LOADING FROM LOCAL STORAGE ========= 
@@ -13,23 +33,22 @@ import {projectsStorage, getProjects, getTodos} from './storage.js';
         if(projects == null) return;
         projects.forEach((el) => addProjectElement(el.name));
     }
-    function loadTodos(){
-        const projectName = getCurrentProject();
+    function loadTodos(projectName){
+        // clear current todo-list, set data name of selected project
+        clearTodos();
+        setOpenedProject(projectName);
+        document.querySelector('.todo').setAttribute('data-project', projectName);
+        // get from storage and load each one
         const todos = getTodos(projectName);
         if(todos == null) return;
         todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description, el.done)});
     }  
-    function getCurrentProject(){
-        const project = document.querySelector('todo');
-        return project.dataset.project;
+    function clearTodos(){
+        document.querySelector('.todo').innerHTML = "";
     }
 // ========= ADDING EVENT LISTENERS TO BUTTONS =========
     function eventListeners(){
-        const addProjectBtn = document.querySelector('#add-project');
-        const addTodoBtn = document.querySelector('#add-todo');
-        const submitNewProject = document.getElementById('add-project_submit');
-        const cancelNewProject = document.getElementById('add-project_cancel');
-        const cancelNewTodo = document.getElementById('add-todo_cancel');
+
         // for project
         addProjectBtn.addEventListener('click', () => {
             showNewProjectDiv(addProjectBtn)
@@ -37,13 +56,26 @@ import {projectsStorage, getProjects, getTodos} from './storage.js';
         cancelNewProject.addEventListener('click',() => {
             hideNewProjectDiv(addProjectBtn)
         });
+        submitNewProject.addEventListener('click', () => newProject() )
+        delProjectBtn.forEach(el => {
+            el.addEventListener('click', () => deleteProject(el));
+        })
+
         // for todos
         addTodoBtn.addEventListener('click', () => {
             showNewTodoDiv(addTodoBtn);
         });
+        submitNewTodo.addEventListener('click', newTodo);
         cancelNewTodo.addEventListener('click', () => {
             hideNewTodoDiv(addTodoBtn);
         })
+        doneTodo.forEach(el => {
+            el.addEventListener('change',() => todoDone(el));
+        }) //TODO: update storage
+        
+        delTodoBtn.forEach(el => {
+            el.addEventListener('click', () => deleteTodo(el.dataset.todo));
+        }) 
 
 
     }
@@ -54,6 +86,7 @@ import {projectsStorage, getProjects, getTodos} from './storage.js';
         inputDiv.classList.remove('show');
     }
     function showNewProjectDiv (btn){
+        hideNameWarrning();
         btn.classList.add('hide');
         const inputDiv = document.querySelector('.nav__group--newproject');
         inputDiv.classList.add('show');
@@ -66,76 +99,188 @@ import {projectsStorage, getProjects, getTodos} from './storage.js';
     function showNewTodoDiv (btn){
         btn.classList.add('hide');
         const inputDiv = document.querySelector('.add-todo_group');
+        const date = document.querySelector('[name="todo-date"]');
+        date.value = format(Date.now(), 'yyyy-MM-dd');
         inputDiv.classList.add('show');
+    }
+    function showNameWarrning(){
+        const p = document.getElementById('unique');
+        p.classList.remove('hide');
+    }
+    function hideNameWarrning(){
+        const p = document.getElementById('unique');
+        p.classList.add('hide');
     }
 // ========= CROSS OUT A TODO =========
     function todoDone(todoEl){
+        let data = todoEl.dataset.todo;
+        const element = document.querySelector(`div[data-todo="${data}"]`);
 
+        if(todoEl.checked) {
+            element.classList.add('done');
+        } else {
+            element.classList.remove('done');
+        }   
+    }
+// ========= NEW PROJECT =========
+    function newProject () {
+        const value = document.querySelector('[name="project-name"]').value;
+        const project = Project(value);
+        const projectsArr = getProjects();
+        
+        if(project.uniqueName(projectsArr)){
+            showNameWarrning(); 
+            return;
+        }
+        projectsArr.push(project);
+        setStorage('projects',projectsArr);
+        addProjectElement(project.name);
+        hideNewProjectDiv(addProjectBtn);
+    }
+// ========= DELETE PROJECT =========
+    function deleteProject(btn){
+        const parent = btn.parentNode;
+        const name = parent.getAttribute('data-project');
+        let projectsArr = getProjects();
+        projectsArr = remove(projectsArr, (el) => {
+            return el.name != name;
+        })
+        parent.remove();
+        setStorage('projects', projectsArr);
+        
     }
 
-// ========= ADD INDIVIDUAL ELEMENTS ============
+// ========= NEW TODO =========
+    function newTodo(){
+        const name = document.querySelector('input[name="todo-name"]');
+        const date = document.querySelector('[name="todo-date"]');
+        const priority = document.querySelector('[name="todo-priority"]');
+        const selected = priority.options[priority.selectedIndex].text;
+        addTodoElement(name.value, selected, format(new Date(date.value), 'dd/MMM/yyyy'), false);
+
+        const todo = Todos(name.value, selected,format(new Date(date.value), 'dd/MMM/yyyy'), false);
+        let todoArr = getTodos(getOpenedProject());
+        todoArr.push(todo);
+        setStorage(getOpenedProject(), todoArr);
+
+    }
+// ========= DELETE TODO ITEM =========
+    function deleteTodo(name){
+        const element = document.querySelector(`div[data-todo='${name}']`);
+        let todoArr = getTodos(getOpenedProject());
+        todoArr = remove(todoArr, (el) => {
+            return el.name != name;
+        })
+        element.remove();
+        setStorage(getOpenedProject(), todoArr);
+    }
+// ========= HELPERs =========
+    const getOpenedProject= () => {
+        return document.querySelector('.todo').dataset.project;
+    }
+    const setOpenedProject = (name) => {
+        const div = document.querySelector('.todo');
+        div.dataset.project = name;
+    }
+
+// ========= ADD INDIVIDUAL ELEMENTS TO PAGE============
     function addProjectElement (name) {
-        const projectsDiv = document.querySelector('.projects');
+        const projectsDiv = document.querySelector('.project');
         // createElements
         let div = document.createElement('div');
         let headerName = document.createElement('h2');
         let delBtn = document.createElement('button');
         let icon = document.createElement('i');
-
+        
         // classList
         div.classList.add('nav-project');
         headerName.classList.add('project-name');
-        delBtn.classList.add('project-delbtn');
-        i.classList.add('fas');
-        i.classList.add('fa-trash');
-        i.classList.add('fa-lg');
-
-        div.setAttribute('data-project', name.replace(' ', '-'));
+        delBtn.classList.add('project--delbtn');
+        icon.classList.add('fas');
+        icon.classList.add('fa-trash');
+        icon.classList.add('fa-lg');
+        
+        div.dataset.project = name;
         headerName.textContent = name;
-
+        
         // events
-        div.addEventListener('click', () => {loadTodos()}) ;
-
+        div.addEventListener('click', () => {loadTodos(name)});
+        delBtn.addEventListener('click',() => {deleteProject(delBtn)})
+        
         // append
         delBtn.appendChild(icon);
         div.appendChild(headerName);
         div.appendChild(delBtn);
         projectsDiv.appendChild(div);
-
+        
     }
-
-    function addTodoElement (name, priority, description) {
-        const todoDiv = document.querySelector('.todos');
+    
+    function addTodoElement (name, priority, date, done) {
+        const todoDiv = document.querySelector('.todo');
         //create elements
         let div = document.createElement('div');
+        let divBtns = document.createElement('div');
+        let divGroup1 = document.createElement('div');
+        let divGroup2 = document.createElement('div');
         let headerName = document.createElement('h3');
-        let parDescr = document.createElement('p');
+        let parDate = document.createElement('p');
+        let doneCheckbox = document.createElement('input');
         let delBtn = document.createElement('button');
         let editBtn = document.createElement('button');
-
-        // classList
+        let iconDel = document.createElement('i');
+        let iconEdit = document.createElement('i');
+        
+        
         div.classList.add('todo__item');
-        div.classList.add(priority);
+        div.classList.add(priority.toLowerCase());
+        div.dataset.todo = name;
+        
+        divBtns.classList.add('todo__item__buttons');
+        divGroup1.classList.add('todo__item_group');
+        divGroup2.classList.add('todo__item_group');
+
         headerName.classList.add('todo__item--title');
-        parDescr.className.add('todo__item--descr');
-        delBtn.classList.add('todo__item--delBtn');
-        editBtn.classList.add('todo__item--editBtn');
-
-        //textContent
         headerName.textContent = name;
-        parDescr.textContent = description;
-        delBtn.textContent = 'x';
-        editBtn.textContent = 'edit';
-
+        
+        parDate.classList.add('todo__item--date');
+        parDate.textContent = date;
+        
+        doneCheckbox.classList.add('todo__item--done');
+        doneCheckbox.setAttribute('type', 'checkbox');
+        doneCheckbox.dataset.todo = name;
+        doneCheckbox.checked = done;
+        
+        delBtn.classList.add('todo__item__buttons--delbtn');
+        delBtn.dataset.todo = name;
+        iconDel.classList.add('fas');
+        iconDel.classList.add('fa-trash');
+        iconDel.classList.add('fa-lg');
+        
+        editBtn.classList.add('todo__item__buttons--editbtn');
+        editBtn.dataset.todo = name;
+        iconEdit.classList.add('fas');
+        iconEdit.classList.add('fa-pen');
+        iconEdit.classList.add('fa-lg');
+        
         // event listener
-        delBtn.addEventListener('click', () => { deleteTodo() });
+        delBtn.addEventListener('click', () => { deleteTodo(name) });
+        doneCheckbox.addEventListener('change',() => todoDone(doneCheckbox))
         editBtn.addEventListener('click', () => { editTodo() });
 
         // appendChild
-        div.appendChild(headerName);
-        div.appendChild(parDescr);
-        div.appendChild(delBtn);
-        div.appendChild(editBtn);
+        divGroup1.appendChild(doneCheckbox);
+        divGroup1.appendChild(headerName);
+        div.appendChild(divGroup1);
+
+        delBtn.appendChild(iconDel);
+        editBtn.appendChild(iconEdit);
+
+        divBtns.appendChild(delBtn);
+        divBtns.appendChild(editBtn);
+        divGroup2.appendChild(parDate);
+        divGroup2.appendChild(divBtns);
+        div.appendChild(divGroup2);
+        
         todoDiv.appendChild(div);
 
     }

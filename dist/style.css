@@ -83,7 +83,9 @@ button{
 path{
     fill: var(--color-blue-200);
 }
-.project-delbtn:hover, .todo__item__buttons-delbtn:hover, .todo__item__buttons-editbtn:hover{
+.project--delbtn:hover,
+ .todo__item__buttons--delbtn:hover,
+ .todo__item__buttons--editbtn:hover{
     transform: scale(1.2);
 }
 .nav__menu{
@@ -147,6 +149,12 @@ path{
 .cancelbtn{
     background-color: var(--color-blue-200);
 }
+
+#unique{
+    color: red;
+    
+}
+
 /* ===========  MAIN ===========  */
 #main{
     margin-left: 300px;
