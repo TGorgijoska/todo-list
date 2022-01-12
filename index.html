@@ -22,13 +22,13 @@
             <!-- PROJECTS -->
             <div class="nav__group">
                 <div class="project">
-                    <div class="nav-project" data-project="javascript-as-a-lang">
+                    <div class="nav-project" data-project="javascript as a lang">
                         <h2 class="project-name">JavaScript is a lang </h2>
-                        <button class="project-delbtn"> <i class="fas fa-trash fa-lg"></i> </button>
+                        <button class="project--delbtn"> <i class="fas fa-trash fa-lg"></i> </button>
                     </div>
                     <div class="nav-project" data-project="css">
                         <h2 class="project-name">CSS</h2>
-                        <button class="project-delbtn"><i class="fas fa-trash fa-lg"></i>  </button>
+                        <button class="project--delbtn"><i class="fas fa-trash fa-lg"></i>  </button>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,7 @@
                 <button id="add-project"><i class="fas fa-plus fa-lg"></i>new project</button>
                 <div class="nav__group--newproject">
                     <input type="text" name="project-name" placeholder="Project name ..." id="">
+                    <p id="unique" class="hide">*must choose unique name</p>
                     <div class="add-btns">
                         <button id="add-project_submit" class="submitbtn">add project</button>
                         <button id="add-project_cancel" class="cancelbtn">cancel</button>
@@ -48,7 +49,7 @@
     <!-- TODOs -->
     <main id="main">
         <!-- NEW TODO ELEMENTS -->
-        <div class="todo">              
+        <div class="main_addtodo">              
             <button id="add-todo"><i class="fas fa-plus fa-lg"></i>new todo</button>
             <div class="add-todo_group">
                 <input type="text" name="todo-name" placeholder="Todo name ..." id="">
@@ -67,30 +68,30 @@
             </div>
         </div>
         <!-- ALL TODOs -->
-        <div class="todo" data-project="uni" >
-            <div class="todo__item low done" data-todo="1">
+        <div class="todo" data-project="javascript as a lang" >
+            <div class="todo__item low done" data-todo="factory functions">
                 <div class="todo__item_group">
-                    <input type="checkbox" name="" id="">
+                    <input type="checkbox" checked data-todo="factory functions" class="todo__item--done" name="" id="">
                     <h3 class="todos_item--title ">Factory functions</h3>
                 </div>
                 <div class="todo__item_group">
                     <p class="todo__item--date">12.09.2021</p>
                     <div class="todo__item__buttons">
-                        <button class="todo__item__buttons-delbtn"><i class="fas fa-trash fa-lg"></i>  </button>
-                        <button class="todo__item__buttons-editbtn"><i class="fas fa-pen fa-lg"></i></button>
+                        <button class="todo__item__buttons--delbtn" data-todo="factory functions"><i class="fas fa-trash fa-lg"></i>  </button>
+                        <button class="todo__item__buttons--editbtn" data-todo="factory functions"><i class="fas fa-pen fa-lg"></i></button>
                     </div>
                 </div>
             </div>
-            <div class="todo__item high" data-todo="3">
-                <div class="todo__item_group">
-                    <input type="checkbox" name="" id="">
+            <div class="todo__item high" data-todo="todo-project">
+                <div class="todo__item_group" >
+                    <input type="checkbox" data-todo="todo-project" class="todo__item--done" name="" id="">
                     <h3 class="todo__item--title" >todo-project</h3>
                 </div>
                 <div class="todo__item_group">
                     <p class="todo__item--date">12.09.2021</p>
                     <div class="todo__item__buttons">
-                        <button class="todo__item__buttons-delbtn"> <i class="fas fa-trash fa-lg"></i></button>
-                        <button class="todo__item__buttons-editbtn"><i class="fas fa-pen fa-lg"></i></button>
+                        <button class="todo__item__buttons--delbtn"  data-todo="todo-project"> <i class="fas fa-trash fa-lg"></i></button>
+                        <button class="todo__item__buttons--editbtn" data-todo="todo-project"><i class="fas fa-pen fa-lg"></i></button>
                     </div>
                 </div>
             </div>
