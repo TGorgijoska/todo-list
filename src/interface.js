@@ -116,13 +116,16 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     }
 // ========= CROSS OUT A TODO =========
     function todoDone(todoEl){
-        let data = todoEl.dataset.todo;
-        const element = document.querySelector(`div[data-todo="${data}"]`);
+        const todoName = todoEl.dataset.todo;
+        const elementTodo = document.querySelector(`div[data-todo="${todoName}"]`);
+        const parentProject = elementTodo.parentNode.getAttribute('data-project');
 
         if(todoEl.checked) {
-            element.classList.add('done');
+            elementTodo.classList.add('done');
+            Storage.updateDoneTodo(parentProject, todoName, true);
         } else {
-            element.classList.remove('done');
+            elementTodo.classList.remove('done');
+            Storage.updateDoneTodo(parentProject, todoName, false);
         }   
     }
 // ========= NEW PROJECT =========
@@ -161,8 +164,8 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     }
 // ========= DELETE TODO ITEM =========
     function deleteTodo(name){
-        const element = document.querySelector(`div[data-todo='${name}']`);
-        element.remove();
+        const elementTodo = document.querySelector(`div[data-todo='${name}']`);
+        elementTodo.remove();
         Storage.removeTodoStorage(name);
     }
 // ========= HELPERs =========
@@ -225,6 +228,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         div.classList.add('todo__item');
         div.classList.add(priority.toLowerCase());
         div.dataset.todo = name;
+        if(done) div.classList.add('done');
         
         divBtns.classList.add('todo__item__buttons');
         divGroup1.classList.add('todo__item_group');

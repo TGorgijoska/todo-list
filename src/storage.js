@@ -32,9 +32,9 @@ export function removeProjectStorage(name){
     localStorage.removeItem(name);
 }
 export function addTodoStorage(todo){
-    let todoArr = Storage.getTodos(getOpenedProject());
+    let todoArr = getTodos(getOpenedProject());
     todoArr.push(todo);
-    Storage.setStorage(getOpenedProject(), todoArr);
+    setStorage(getOpenedProject(), todoArr);
 }
 export function removeTodoStorage(name){
     let todoArr = getTodos(getOpenedProject());
@@ -43,4 +43,13 @@ export function removeTodoStorage(name){
     })
     
     setStorage(getOpenedProject(), todoArr);
+}
+
+export function updateDoneTodo(project, todo, done){
+    const todos = getTodos(project);
+    todos.forEach(el => {
+        if(el.name == todo)
+        el.done = done;
+    })
+    setStorage(project, todos);
 }
