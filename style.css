@@ -91,7 +91,7 @@ path{
 .nav__menu{
     display:none;
 }
-/*  =========== NEW-PROJECT NEW-TODO===========  */
+/*  =========== NEW-PROJECT NEW-TODO  EDIT-TODO===========  */
 #add-project, #add-todo{
     width:100%;
     padding:1.5em;
@@ -116,19 +116,32 @@ path{
     display: none;
     flex-direction: column;
 }
-.nav__group--newproject input, .add-todo_group input , .add-todo_group select{
+.edit-todo{
+    background-color: var(--color-yellow-200);
+    padding: 1em;
+    border: 1px solid var(--color-blue-200);
+}
+
+.nav__group--newproject input,
+ .add-todo_group input ,
+  .add-todo_group select,
+   .edit-todo input,
+    .edit-todo select{
     padding: 1em;
     border: none;
     border-radius: 5px;
     outline: none;
 }
-.add-todo_group input, .add-todo_group select{
+.add-todo_group input,
+ .add-todo_group select,
+  .edit-todo input,
+   .edit-todo select{
     background-color: var(--color-blue-100);
     margin: 0.5em 0;
 }
 
 
-.add-btns{
+.add-btns, .edit-btns{
     display: flex;
     justify-content: flex-start;
     gap:1em;
@@ -160,7 +173,7 @@ path{
     margin-left: 300px;
     padding: 10px;
 }
-.todo__item{
+.todo__item_info{
     display: flex;
     justify-content: space-between;
     align-items: center;
