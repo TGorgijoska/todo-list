@@ -5,7 +5,6 @@ import { remove } from "lodash";
 import { format } from 'date-fns'
 // TODO: fix buttons functions
 // TODO: edit todo
-// TODO: modify done todo
 // TODO: add today's tasks
 // TODO: clear input after add/cancel
 // TODO: sort todos? maybe
@@ -25,9 +24,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     export default function loadPage () {
 
         loadProjects();
-        eventListeners();
-
-       
+        eventListeners();     
         
     }
 // ========= LOADING FROM LOCAL STORAGE ========= 
@@ -40,15 +37,12 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         // clear current todo-list, set data name of selected project
         clearTodos();
         setOpenedProject(projectName);
-        document.querySelector('.todo').setAttribute('data-project', projectName);
         // get from storage and load each one
         const todos = Storage.getTodos(projectName);
         if(todos == null) return;
         todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description, el.done)});
     }  
-    function clearTodos(){
-        document.querySelector('.todo').innerHTML = "";
-    }
+    
 // ========= ADDING EVENT LISTENERS TO BUTTONS =========
     function eventListeners(){
 
@@ -74,7 +68,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         })
         doneTodo.forEach(el => {
             el.addEventListener('change',() => todoDone(el));
-        }) //TODO: update storage
+        })
         
         delTodoBtn.forEach(el => {
             el.addEventListener('click', () => deleteTodo(el.dataset.todo));
@@ -89,9 +83,11 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         inputDiv.classList.remove('show');
     }
     function showNewProjectDiv (btn){
-        hideNameWarrning();
-        btn.classList.add('hide');
         const inputDiv = document.querySelector('.nav__group--newproject');
+        // hide 'add' btn, show inputs
+        hideNameWarrning();
+        clearInput('project-name');
+        btn.classList.add('hide');
         inputDiv.classList.add('show');
     }
     function hideNewTodoDiv (btn){
@@ -100,10 +96,12 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         inputDiv.classList.remove('show');
     }
     function showNewTodoDiv (btn){
-        btn.classList.add('hide');
         const inputDiv = document.querySelector('.add-todo_group');
         const date = document.querySelector('[name="todo-date"]');
+        // clear input value, set input-date to todays, hide 'add-new' btn, show inputs
+        clearInput('todo-name');
         date.value = format(Date.now(), 'yyyy-MM-dd');
+        btn.classList.add('hide');
         inputDiv.classList.add('show');
     }
     function showNameWarrning(){
@@ -151,13 +149,13 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
 
 // ========= NEW TODO =========
     function newTodo(){
-        const name = document.querySelector('input[name="todo-name"]');
-        const date = document.querySelector('[name="todo-date"]');
+        const name = document.querySelector('input[name="todo-name"]').value;
+        const date = document.querySelector('[name="todo-date"]').value;
         const priority = document.querySelector('[name="todo-priority"]');
         const selected = priority.options[priority.selectedIndex].text;
-        addTodoElement(name.value, selected, format(new Date(date.value), 'dd/MMM/yyyy'), false);
+        addTodoElement(name, selected, format(new Date(date), 'dd/MMM/yyyy'), false);
 
-        const todo = Todos(name.value, selected,format(new Date(date.value), 'dd/MMM/yyyy'), false);
+        const todo = Todos(name, selected,format(new Date(date), 'dd/MMM/yyyy'), false);
         Storage.addTodoStorage(todo);
 
         hideNewTodoDiv(addTodoBtn);
@@ -175,6 +173,12 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
     const setOpenedProject = (name) => {
         const div = document.querySelector('.todo');
         div.dataset.project = name;
+    }
+    const clearInput = (input) => {
+        document.querySelector(`input[name='${input}']`).value = '';
+    }
+    const clearTodos = () => {
+        document.querySelector('.todo').innerHTML = "";
     }
 
 // ========= ADD INDIVIDUAL ELEMENTS TO PAGE============

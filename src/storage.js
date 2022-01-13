@@ -49,7 +49,7 @@ export function updateDoneTodo(project, todo, done){
     const todos = getTodos(project);
     todos.forEach(el => {
         if(el.name == todo)
-        el.done = done;
+            el.done = done;
     })
     setStorage(project, todos);
 }
