@@ -3,10 +3,8 @@ import Project from './project.js';
 import Todos from './todos.js';
 import { remove } from "lodash";
 import { format } from 'date-fns'
-// TODO: fix buttons functions
 // TODO: edit todo
 // TODO: add today's tasks
-// TODO: clear input after add/cancel
 // TODO: sort todos? maybe
 
 
@@ -20,6 +18,7 @@ const submitNewTodo = document.querySelector('#add-todo_submit');
 const cancelNewTodo = document.getElementById('add-todo_cancel');
 const doneTodo = document.querySelectorAll('.todo__item--done');
 const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
+const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
 
     export default function loadPage () {
 
@@ -40,7 +39,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         // get from storage and load each one
         const todos = Storage.getTodos(projectName);
         if(todos == null) return;
-        todos.forEach((el) => {addTodoElement(el.name, el.priority, el.description, el.done)});
+        todos.forEach((el) => {addTodoElement(el.name, el.priority, el.date, el.done)});
     }  
     
 // ========= ADDING EVENT LISTENERS TO BUTTONS =========
@@ -72,6 +71,9 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         
         delTodoBtn.forEach(el => {
             el.addEventListener('click', () => deleteTodo(el.dataset.todo));
+        }) 
+        editTodoBtn.forEach(el => {
+            el.addEventListener('click', () => editTodo(el.dataset.todo));
         }) 
 
 
@@ -165,6 +167,10 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         const elementTodo = document.querySelector(`div[data-todo='${name}']`);
         elementTodo.remove();
         Storage.removeTodoStorage(name);
+    }
+// ========= EDIT TODO ITEM =========
+    function editTodo(name){
+
     }
 // ========= HELPERs =========
     export const getOpenedProject= () => {
@@ -264,7 +270,7 @@ const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
         // event listener
         delBtn.addEventListener('click', () => { deleteTodo(name) });
         doneCheckbox.addEventListener('change',() => todoDone(doneCheckbox))
-        editBtn.addEventListener('click', () => { editTodo() });
+        editBtn.addEventListener('click', () => { editTodo(name) });
 
         // appendChild
         divGroup1.appendChild(doneCheckbox);
