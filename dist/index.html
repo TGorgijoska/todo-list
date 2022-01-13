@@ -62,7 +62,7 @@
                     </select>
                 </div>
                 <div class="add-btns">
-                    <button id="add-todo_submit" class="submitbtn">add project</button>
+                    <button id="add-todo_submit" class="submitbtn">add todo</button>
                     <button id="add-todo_cancel" class="cancelbtn">cancel</button>
                 </div>
             </div>
@@ -70,31 +70,53 @@
         <!-- ALL TODOs -->
         <div class="todo" data-project="javascript as a lang" >
             <div class="todo__item low done" data-todo="factory functions">
-                <div class="todo__item_group">
-                    <input type="checkbox" checked data-todo="factory functions" class="todo__item--done" name="" id="">
-                    <h3 class="todos_item--title ">Factory functions</h3>
-                </div>
-                <div class="todo__item_group">
-                    <p class="todo__item--date">12.09.2021</p>
-                    <div class="todo__item__buttons">
-                        <button class="todo__item__buttons--delbtn" data-todo="factory functions"><i class="fas fa-trash fa-lg"></i>  </button>
-                        <button class="todo__item__buttons--editbtn" data-todo="factory functions"><i class="fas fa-pen fa-lg"></i></button>
+                <div class="todo__item_info">
+                    <div class="todo__item_group">
+                        <input type="checkbox" checked data-todo="factory functions" class="todo__item--done" name="" id="">
+                        <h3 class="todos_item--title ">Factory functions</h3>
+                    </div>
+                    <div class="todo__item_group">
+                        <p class="todo__item--date">12.09.2021</p>
+                        <div class="todo__item__buttons">
+                            <button class="todo__item__buttons--delbtn" data-todo="factory functions"><i class="fas fa-trash fa-lg"></i>  </button>
+                            <button class="todo__item__buttons--editbtn" data-todo="factory functions"><i class="fas fa-pen fa-lg"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="todo__item high" data-todo="todo-project">
-                <div class="todo__item_group" >
-                    <input type="checkbox" data-todo="todo-project" class="todo__item--done" name="" id="">
-                    <h3 class="todo__item--title" >todo-project</h3>
-                </div>
-                <div class="todo__item_group">
-                    <p class="todo__item--date">12.09.2021</p>
-                    <div class="todo__item__buttons">
-                        <button class="todo__item__buttons--delbtn"  data-todo="todo-project"> <i class="fas fa-trash fa-lg"></i></button>
-                        <button class="todo__item__buttons--editbtn" data-todo="todo-project"><i class="fas fa-pen fa-lg"></i></button>
+                <div class="todo__item_info">
+                    <div class="todo__item_group" >
+                        <input type="checkbox" data-todo="todo-project" class="todo__item--done" name="" id="">
+                        <h3 class="todo__item--title" >todo-project</h3>
+                    </div>
+                    <div class="todo__item_group">
+                        <p class="todo__item--date">12.09.2021</p>
+                        <div class="todo__item__buttons">
+                            <button class="todo__item__buttons--delbtn"  data-todo="todo-project"> <i class="fas fa-trash fa-lg"></i></button>
+                            <button class="todo__item__buttons--editbtn" data-todo="todo-project"><i class="fas fa-pen fa-lg"></i></button>
+                        </div>
                     </div>
                 </div>
+                <!-- <div class="edit-todo">
+                    <div class="edit-inputs">
+                        <input type="text" name="edit-todo-name">
+                        <input type="date" name="edit-todo-date">
+                        <select name="edit-todo-priority" id="">
+                            <option value="high">High</option>
+                            <option value="mid">Mid</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="edit-btns">
+                        <button id="edit-todo_submit" class="submitbtn">submit change</button>
+                        <button id="edit-todo_cancel" class="cancelbtn">cancel</button>
+                    </div>
+                </div>
+                 -->
             </div>
+            <!-- * edit todo -->
+
         </div>
     </main>
     
