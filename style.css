@@ -49,11 +49,11 @@ button{
     padding: 0 0.5em;
 }
 #nav-icon{
-    width: 50px;   
+    width: 50px;
 }
 
 /*  =========== NAV-PROJECTS ===========  */
-.project{
+.project, .time-project{
     width:100%;
 }
 .nav-project{
@@ -66,6 +66,10 @@ button{
 }
 .nav-project:hover{
     background-color: rgba(255, 255, 255, 0.5);
+}
+.today{
+    justify-content:flex-start;
+    gap: 1em;
 }
 .active{
     background-color: rgba(255, 255, 255, 0.5);
