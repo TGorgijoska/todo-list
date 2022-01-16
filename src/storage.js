@@ -1,6 +1,5 @@
 import Project from './project.js';
 import Todos from './todos.js';
-import { getOpenedProject } from './interface.js';
 import { remove } from "lodash";
 
 export function setStorage(name, value){

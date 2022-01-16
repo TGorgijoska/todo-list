@@ -28,6 +28,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
     }
 // ========= LOADING FROM LOCAL STORAGE ========= 
     function loadProjects () {
+        
         const projects = Storage.getProjects();
         if(projects == null) return;
         projects.forEach((el) => addProjectElement(el.name));
@@ -180,7 +181,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         elementTodo.remove();
         Storage.removeTodoStorage(name, getOpenedProject());
     }
-// *========= EDIT TODO ITEM =========
+// ========= EDIT TODO ITEM =========
     function handleEdit(name){
         const todo = Storage.getTodo(getOpenedProject(), name);
 
@@ -205,6 +206,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         return document.querySelector('.todo').dataset.project;
     }
     const setOpenedProject = (name) => {
+        setActive(name);
         const div = document.querySelector('.todo');
         div.dataset.project = name;
     }
@@ -224,6 +226,13 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         div.querySelector('.todo__item--done').setAttribute('data-todo', todo.name);
         div.querySelector('.todo__item__buttons--delbtn').setAttribute('data-todo', todo.name);
         div.querySelector('.todo__item__buttons--editbtn').setAttribute('data-todo', todo.name);
+    }
+    const setActive = (project) => {
+        const projects = document.querySelectorAll(`[data-project]`);
+        projects.forEach(el => {
+            if (el.getAttribute('data-project') == project) el.classList.toggle('active', true);
+                else el.classList.toggle('active', false)
+        })
     }
 
 // ========= ADD INDIVIDUAL ELEMENTS TO PAGE============
