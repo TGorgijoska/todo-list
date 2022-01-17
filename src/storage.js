@@ -1,6 +1,7 @@
 import Project from './project.js';
 import Todos from './todos.js';
 import { remove } from "lodash";
+import { format } from 'date-fns';
 
 export function setStorage(name, value){
     localStorage.setItem(name, JSON.stringify(value));
@@ -63,4 +64,17 @@ export function updateDoneTodo(project, todo, done){
             el.done = done;
     })
     setStorage(project, todos);
+}
+
+export function todaysTodos(){
+    let allTodos = [];
+    let arrTodays = [];
+    const todaysDate = format(Date.now(), 'dd/MMM/yyyy');
+    // allTodos.forEach(project => { arr[project.name]=(project.filter(todo => {return todo.date == todaysDate}))})
+    getProjects().forEach(el => { allTodos[el.name]=getAllTodos(el.name)})
+    for(let key in allTodos) {
+        arrTodays[key] = allTodos[key].filter(todo => {return todo.date == todaysDate})
+    }
+
+    return arrTodays;
 }

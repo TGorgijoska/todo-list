@@ -1,11 +1,8 @@
 import * as Storage from './storage.js';
 import Project from './project.js';
 import Todos from './todos.js';
-import { remove } from "lodash";
 import { format } from 'date-fns'
-// TODO: edit todo
-// TODO: add today's tasks
-// TODO: sort todos? maybe
+// TODO: sort todos
 
 
 const addProjectBtn = document.getElementById('add-project');
@@ -16,9 +13,9 @@ const delProjectBtn = document.querySelectorAll('.project-delbtn');
 const addTodoBtn = document.getElementById('add-todo');
 const submitNewTodo = document.getElementById('add-todo_submit');
 const cancelNewTodo = document.getElementById('add-todo_cancel');
-const doneTodo = document.querySelectorAll('.todo__item--done');
-const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
-const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
+// const doneTodo = document.querySelectorAll('.todo__item--done');
+// const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
+// const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
 
     export default function loadPage () {
 
@@ -27,84 +24,84 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         
     }
 // ========= LOADING FROM LOCAL STORAGE ========= 
-    function loadProjects () {
-        
+    function loadProjects () {      
         const projects = Storage.getProjects();
-        if(projects == null) return;
-        projects.forEach((el) => addProjectElement(el.name));
+        projects.forEach((el) => renderProjectElement(el.name));
     }
     function loadTodos(projectName){
+        hideNewProjectDiv();
+        hideNewTodoDiv();
         // clear current todo-list, set data name of selected project
         clearTodos();
         setOpenedProject(projectName);
         // get from storage and load each one
         const todos = Storage.getAllTodos(projectName);
-        if(todos == null) return;
-        todos.forEach((el) => {addTodoElement(el.name, el.priority, el.date, el.done)});
+        todos.forEach((el) => {renderTodoElement(el.name, el.priority, el.date, el.done)});
     }  
-    
+    function loadTodayTodos(){
+        setOpenedProject('today'); 
+        clearTodos();
+        const todoArr = Storage.todaysTodos();
+        console.log(todoArr);
+        for(let project in todoArr){
+            todoArr[project].forEach(todo => {renderTodoElement(todo.name, todo.priority, todo.date, todo.done, project)})
+        }
+       }
 // ========= ADDING EVENT LISTENERS TO BUTTONS =========
     function eventListeners(){
-
+        const today = document.getElementById('today');
+        today.addEventListener('click', loadTodayTodos )
         // for project
-        addProjectBtn.addEventListener('click', () => {
-            showNewProjectDiv(addProjectBtn)
-        });
-        cancelNewProject.addEventListener('click',() => {
-            hideNewProjectDiv(addProjectBtn)
-        });
-        submitNewProject.addEventListener('click', () => newProject() )
+        addProjectBtn.addEventListener('click', showNewProjectDiv );
+        cancelNewProject.addEventListener('click',hideNewProjectDiv );
+        submitNewProject.addEventListener('click', newProject )
         delProjectBtn.forEach(el => {
             el.addEventListener('click', () => deleteProject(el));
         })
 
         // for todos
-        addTodoBtn.addEventListener('click', () => {
-            showNewTodoDiv(addTodoBtn);
-        });
+        addTodoBtn.addEventListener('click', showNewTodoDiv);
         submitNewTodo.addEventListener('click', newTodo);
-        cancelNewTodo.addEventListener('click', () => {
-            hideNewTodoDiv(addTodoBtn);
-        })
-        doneTodo.forEach(el => {
-            el.addEventListener('change',() => todoDone(el));
-        })
+        cancelNewTodo.addEventListener('click', hideNewTodoDiv)
+        // doneTodo.forEach(el => {
+        //     el.addEventListener('change',() => todoDone(el));
+        // })
         
-        delTodoBtn.forEach(el => {
-            el.addEventListener('click', () => deleteTodo(el.dataset.todo));
-        }) 
-        editTodoBtn.forEach(el => {
-            el.addEventListener('click', () => handleEdit(el.dataset.todo));
-        }) 
+        // delTodoBtn.forEach(el => {
+        //     el.addEventListener('click', () => deleteTodo(el.dataset.todo));
+        // }) 
+        // editTodoBtn.forEach(el => {
+        //     el.addEventListener('click', () => handleEdit(el.dataset.todo));
+        // }) 
 
 
     }
 // ======== SHOW/HIDE INPUT+BUTTONS FOR ADDING NEW PROJECT ========
-    function hideNewProjectDiv (btn){
-        btn.classList.remove('hide');
+    function hideNewProjectDiv (){
+        addProjectBtn.classList.remove('hide');
         const inputDiv = document.querySelector('.nav__group--newproject');
         inputDiv.classList.remove('show');
     }
-    function showNewProjectDiv (btn){
+    function showNewProjectDiv (){
         const inputDiv = document.querySelector('.nav__group--newproject');
         // hide 'add' btn, show inputs
         hideNameWarrning();
         clearInput('project-name');
-        btn.classList.add('hide');
+        addProjectBtn.classList.add('hide');
         inputDiv.classList.add('show');
     }
-    function hideNewTodoDiv (btn){
-        btn.classList.remove('hide');
+    function hideNewTodoDiv (){
+        addTodoBtn.classList.remove('hide');
         const inputDiv = document.querySelector('.add-todo_group');
         inputDiv.classList.remove('show');
     }
-    function showNewTodoDiv (btn){
+    function showNewTodoDiv (){
         const inputDiv = document.querySelector('.add-todo_group');
         const date = document.querySelector('[name="todo-date"]');
         // clear input value, set input-date to todays, hide 'add-new' btn, show inputs
         clearInput('todo-name');
         date.value = format(Date.now(), 'yyyy-MM-dd');
-        btn.classList.add('hide');
+        addTodoBtn.classList.add('hide');
         inputDiv.classList.add('show');
     }
     function showNameWarrning(){
@@ -115,9 +112,8 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         const p = document.getElementById('unique');
         p.classList.add('hide');
     }
-    
-// * --------------- edit  
-    function hideEditTodoDiv(name){ // todo: fix cancel vs submit
+
+    function hideEditTodoDiv(name){ 
         const divEdit = document.querySelector('.edit-todo');
         const parent = document.querySelector(`[data-todo='${name}']`);
         parent.firstChild.classList.remove('hide');
@@ -128,10 +124,15 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         parent.firstChild.classList.add('hide');
     }
 // ========= CROSS OUT A TODO =========
-    function todoDone(todoEl){
+    function todoDone(todoEl, project){
         const todoName = todoEl.dataset.todo;
         const elementTodo = document.querySelector(`div[data-todo="${todoName}"]`);
-        const parentProject = elementTodo.parentNode.getAttribute('data-project');
+        let parentProject;
+        if(!project){
+            parentProject = elementTodo.parentNode.getAttribute('data-project');
+        } else {
+            parentProject = project;
+        }
 
         if(todoEl.checked) {
             elementTodo.classList.add('done');
@@ -151,8 +152,8 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
             return;
         }
         Storage.addProjectStorage(project);   
-        addProjectElement(project.name);
-        hideNewProjectDiv(addProjectBtn);
+        renderProjectElement(project.name);
+        hideNewProjectDiv();
     }
 // ========= DELETE PROJECT =========
     function deleteProject(btn){
@@ -160,6 +161,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         const name = parent.getAttribute('data-project');
         parent.remove();
         Storage.removeProjectStorage(name);
+        loadTodayTodos();
     }
 
 // ========= NEW TODO =========
@@ -168,41 +170,51 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         const date = document.querySelector('[name="todo-date"]').value;
         const priority = document.querySelector('[name="todo-priority"]');
         const selected = priority.options[priority.selectedIndex].text;
-        addTodoElement(name, selected, format(new Date(date), 'dd/MMM/yyyy'), false);
+        renderTodoElement(name, selected, format(new Date(date), 'dd/MMM/yyyy'), false);
 
         const todo = Todos(name, selected,format(new Date(date), 'dd/MMM/yyyy'), false);
         Storage.addTodoStorage(todo, getOpenedProject());
 
-        hideNewTodoDiv(addTodoBtn);
+        hideNewTodoDiv();
     }
 // ========= DELETE TODO ITEM =========
-    function deleteTodo(name){
+    function deleteTodo(name, project){
+        let projectName;
         const elementTodo = document.querySelector(`div[data-todo='${name}']`);
         elementTodo.remove();
-        Storage.removeTodoStorage(name, getOpenedProject());
+        !project ? projectName = getOpenedProject() : projectName = project;
+        Storage.removeTodoStorage(name, projectName);
     }
 // ========= EDIT TODO ITEM =========
-    function handleEdit(name){
-        const todo = Storage.getTodo(getOpenedProject(), name);
-
+    function handleEdit(name, project){
+        let projectName;
+        !project ? projectName = getOpenedProject() : projectName = project;
+        const todo = Storage.getTodo(projectName, name);
+            createEditTodoDiv(todo.name, todo.priority, todo.date, todo.done, project);
+    
         hideTodo(name);
-        createEditTodoDiv(todo.name, todo.priority, todo.date, todo.done);
     }
-    function editTodo(oldName, done){
+    function editTodo(oldName, done, project){
         const name = document.querySelector('input[name="edit-todo-name"]').value;
         const date = document.querySelector('[name="edit-todo-date"]').value;
         const priority = document.querySelector('[name="edit-todo-priority"]');
         const selected = priority.options[priority.selectedIndex].text;
 
         const todo = Todos(name, selected, format(new Date(date), 'dd/MMM/yyyy'), done);
-        Storage.editTodoStorage(getOpenedProject(),oldName, todo);
-        
         updateTodoDiv(oldName, todo);
-        hideEditTodoDiv(todo.name); 
+    // do we have todays projects opened
+        if(!project){
+            Storage.editTodoStorage(getOpenedProject(),oldName, todo);
+            hideEditTodoDiv(todo.name); 
+        }
+        else {
+            Storage.editTodoStorage(project,oldName, todo);
+            loadTodayTodos();
+        }    
         
     }
 // ========= HELPERs =========
-    export const getOpenedProject= () => {
+    const getOpenedProject= () => {
         return document.querySelector('.todo').dataset.project;
     }
     const setOpenedProject = (name) => {
@@ -236,7 +248,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
     }
 
 // ========= ADD INDIVIDUAL ELEMENTS TO PAGE============
-    function addProjectElement (name) {
+    function renderProjectElement (name) {
         const projectsDiv = document.querySelector('.project');
         // createElements
         let div = document.createElement('div');
@@ -267,7 +279,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         
     }
     
-    function addTodoElement (name, priority, date, done) {
+    function renderTodoElement (name, priority, date, done, project) {
         const todoDiv = document.querySelector('.todo');
         //create elements
         let divOuter = document.createElement('div');
@@ -276,6 +288,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         let divGroup1 = document.createElement('div');
         let divGroup2 = document.createElement('div');
         let headerName = document.createElement('h3');
+        let projectName = document.createElement('h5');
         let parDate = document.createElement('p');
         let doneCheckbox = document.createElement('input');
         let delBtn = document.createElement('button');
@@ -317,15 +330,17 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         iconEdit.classList.add('fas');
         iconEdit.classList.add('fa-pen');
         iconEdit.classList.add('fa-lg');
-        
         // event listener
-        delBtn.addEventListener('click', () => { deleteTodo(name) });
-        doneCheckbox.addEventListener('change',() => todoDone(doneCheckbox))
-        editBtn.addEventListener('click', () => { handleEdit(name) });
-
+        delBtn.addEventListener('click', () => { deleteTodo(name, project) });
+        doneCheckbox.addEventListener('change',() => todoDone(doneCheckbox, project))
+        editBtn.addEventListener('click', () => { handleEdit(name, project) });
         // appendChild
         divGroup1.appendChild(doneCheckbox);
         divGroup1.appendChild(headerName);
+        if(project !== undefined){
+            projectName.textContent = `(${project})`;
+            divGroup1.appendChild(projectName);
+        }
         divInner.appendChild(divGroup1);
 
         delBtn.appendChild(iconDel);
@@ -341,7 +356,7 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         todoDiv.appendChild(divOuter);
 
     }
-    function createEditTodoDiv(name, priority, date, done){
+    function createEditTodoDiv(name, priority, date, done, project){
         const divParent = document.querySelector(`[data-todo='${name}']`);
         const div = document.createElement('div');
         const divInputs = document.createElement('div');
@@ -378,8 +393,12 @@ const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
         submitBtn.setAttribute('id', 'edit-todo_submit');
         submitBtn.classList.add('submitbtn');
         submitBtn.textContent = 'submit change';
-        submitBtn.addEventListener('click', () => {editTodo(name, done)})
-
+        if(!project){
+            submitBtn.addEventListener('click', () => {editTodo(name, done)})
+        } else {
+            submitBtn.addEventListener('click', () => {editTodo(name, done, project)})           
+        }
+        
         cancelBtn.setAttribute('id', 'edit-todo_cancel');
         cancelBtn.classList.add('cancelbtn');
         cancelBtn.textContent = 'cancel';
