@@ -14,6 +14,13 @@ const submitNewTodo = document.getElementById('add-todo_submit');
 const cancelNewTodo = document.getElementById('add-todo_cancel');
 
     export default function loadPage () {
+        if(localStorage.length == 0){
+            Storage.addProjectStorage(Project('Javascript'));
+            Storage.addProjectStorage(Project('CSS'));
+            Storage.addTodoStorage(Todos('factory functions', 'low', format(Date.now(), 'dd/MMM/yyyy'), false), 'Javascript');
+            Storage.addTodoStorage(Todos('modules', 'high', format(Date.now(), 'dd/MMM/yyyy'), true), 'Javascript');
+        }
+        loadTodayTodos();
 
         loadProjects();
         eventListeners();     
