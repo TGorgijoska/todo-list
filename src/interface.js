@@ -2,7 +2,6 @@ import * as Storage from './storage.js';
 import Project from './project.js';
 import Todos from './todos.js';
 import { format } from 'date-fns'
-// TODO: sort todos
 
 
 const addProjectBtn = document.getElementById('add-project');
@@ -13,9 +12,6 @@ const delProjectBtn = document.querySelectorAll('.project-delbtn');
 const addTodoBtn = document.getElementById('add-todo');
 const submitNewTodo = document.getElementById('add-todo_submit');
 const cancelNewTodo = document.getElementById('add-todo_cancel');
-// const doneTodo = document.querySelectorAll('.todo__item--done');
-// const delTodoBtn = document.querySelectorAll('.todo__item__buttons--delbtn');
-// const editTodoBtn = document.querySelectorAll('.todo__item__buttons--editbtn');
 
     export default function loadPage () {
 
@@ -49,6 +45,12 @@ const cancelNewTodo = document.getElementById('add-todo_cancel');
        }
 // ========= ADDING EVENT LISTENERS TO BUTTONS =========
     function eventListeners(){
+        // for responsive navigation
+        const openNavBtn = document.querySelector('.open-nav');
+        openNavBtn.addEventListener('click', () => openNav());
+        const closeNavBtn = document.querySelector('.close-nav')
+        closeNavBtn.addEventListener('click', () => closeNav());
+
         const today = document.getElementById('today');
         today.addEventListener('click', loadTodayTodos )
         // for project
@@ -63,17 +65,7 @@ const cancelNewTodo = document.getElementById('add-todo_cancel');
         addTodoBtn.addEventListener('click', showNewTodoDiv);
         submitNewTodo.addEventListener('click', newTodo);
         cancelNewTodo.addEventListener('click', hideNewTodoDiv)
-        // doneTodo.forEach(el => {
-        //     el.addEventListener('change',() => todoDone(el));
-        // })
-        
-        // delTodoBtn.forEach(el => {
-        //     el.addEventListener('click', () => deleteTodo(el.dataset.todo));
-        // }) 
-        // editTodoBtn.forEach(el => {
-        //     el.addEventListener('click', () => handleEdit(el.dataset.todo));
-        // }) 
-
+      
 
     }
 // ======== SHOW/HIDE INPUT+BUTTONS FOR ADDING NEW PROJECT ========
@@ -245,6 +237,40 @@ const cancelNewTodo = document.getElementById('add-todo_cancel');
             if (el.getAttribute('data-project') == project) el.classList.toggle('active', true);
                 else el.classList.toggle('active', false)
         })
+    }
+// ========= NAVIGATION =========
+    const openNav = () => {
+        const header = document.querySelector('.header');
+        header.classList.toggle('open', true);
+        changeIcon(true);
+        slideProjects();
+    }
+    const closeNav = () => {
+        const header = document.querySelector('.header');
+        header.classList.toggle('open', false);
+        changeIcon(false);
+        slideProjects();
+    }        
+    const changeIcon = (open) => {
+        const openIcon = document.querySelector('.open-nav');
+        const closeIcon = document.querySelector('.close-nav');
+        // if we opened the nav
+        if (open){
+            openIcon.setAttribute('style', 'visibility: hidden !important');
+            closeIcon.classList.toggle('show', true);
+        }
+        else {
+            // if we closed the nav
+            openIcon.setAttribute('style', 'visibility: visible');
+            closeIcon.classList.toggle('show', false);
+        }
+    }
+    const slideProjects = () => {
+        const nav = document.querySelector('.nav');
+        if(nav.classList.contains('slide-in')) 
+            nav.classList.toggle('slide-in', false) 
+        else 
+            nav.classList.toggle('slide-in', true);
     }
 
 // ========= ADD INDIVIDUAL ELEMENTS TO PAGE============

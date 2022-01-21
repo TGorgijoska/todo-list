@@ -28,7 +28,7 @@ button{
 } 
 
 /* =========== NAV ===========  */
-#header{
+.header{
     position: fixed;
     left: 0;
     top: 0;
@@ -92,8 +92,13 @@ path{
  .todo__item__buttons--editbtn:hover{
     transform: scale(1.2);
 }
-.nav__menu{
+.open-nav{
     display:none;
+    margin-left: auto;
+}
+.close-nav{
+    display:none;
+    margin-left: auto;
 }
 /*  =========== NEW-PROJECT NEW-TODO  EDIT-TODO===========  */
 #add-project, #add-todo{
@@ -226,30 +231,46 @@ input[type="checkbox"]{
 
 
 /* MEDIA QUERIES */
-/* 
+
 @media (max-width:800px) {
-    #header{
-      width:50px;  
+    .header{
+        z-index: 1;
+        position: absolute;
+        right: 0; 
+        height: 70px;
+        width: 100%;
+        overflow: hidden;
+        box-shadow: 0 5px 5px var(--color-blue-100);
+        transition: all 0.2s ease-in-out;
     } 
+    .nav-title {
+        font-size: 1.5em;
+
+    }
     #main{
-        margin-left: 50px;
+        margin: 0 ;
+
     }
     .nav{
-        transition: all 0.2s ease-in-out;
-        transform: translateX(-100%); 
+        transition: all 0.5s ease-in-out;
+        transform: translateX(-100%);  
     }
     .open{
-        width:300px;
+        height: 100vh;        
+        overflow: scroll;
     }
+
     .slide-in{
-        transition: all 0.2s ease-in-out;
         transform: translateX(0);
     }
-    .nav__menu{
+    .open-nav{
         display:inline;
     }
-    .todo__item{
+    .todo__item_info{
         flex-wrap: wrap;
     }
+    .todo__item_group + .todo__item_group{
+        margin: 1em 0 0 1em;
+    }
 } 
-*/
+
